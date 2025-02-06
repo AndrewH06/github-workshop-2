@@ -43,7 +43,16 @@ def correlation_matrix(df):
     plt.show()
 
 def detect_outliers(df, column):
-    """Detects outliers in a specified column using the IQR method."""
+    """
+    Detects outliers in a specified column using the IQR method.
+    
+    Args:
+    df: The input DataFrame
+    column: The column to detect outliers in
+
+    Returns:
+    outliers: DataFrame containing the outliers
+    """
     if column in df.columns and np.issubdtype(df[column].dtype, np.number):
         Q1 = df[column].quantile(0.25)
         Q3 = df[column].quantile(0.75)
