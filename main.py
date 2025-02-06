@@ -1,6 +1,25 @@
+import time
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+
+def time_it(func: callable) -> callable:
+    """
+    Decorator function to measure the execution time of a function.
+
+    Args:
+    func: The function to be executed
+
+    Returns:
+    wrapper: The wrapper function
+    """
+    def wrapper(*args, **kwargs):
+        start_time = time.time()
+        result = func(*args, **kwargs)
+        end_time = time.time()
+        print(f"Execution time: {end_time - start_time} seconds")
+        return result
+    return wrapper
 
 def load_data(filepath):
     """Loads a CSV file into a Pandas DataFrame."""
@@ -43,7 +62,16 @@ def correlation_matrix(df):
     plt.show()
 
 def detect_outliers(df, column):
-    """Detects outliers in a specified column using the IQR method."""
+    """
+    Detects outliers in a specified column using the IQR method.
+    
+    Args:
+    df: The input DataFrame
+    column: The column to detect outliers in
+
+    Returns:
+    outliers: DataFrame containing the outliers
+    """
     if column in df.columns and np.issubdtype(df[column].dtype, np.number):
         Q1 = df[column].quantile(0.25)
         Q3 = df[column].quantile(0.75)
@@ -56,7 +84,7 @@ def detect_outliers(df, column):
 
 def main():
     """Main function to execute the script."""
-    filepath = "data.csv"  # Modify as needed
+    filepath = "./data/data.csv"  # Modify as needed
     df = load_data(filepath)
     if df is not None:
         df = clean_data(df)
@@ -65,7 +93,9 @@ def main():
         column_to_plot = df.columns[0]  # Change column index as needed
         plot_histogram(df, column_to_plot)
         
-        correlation_matrix(df)
+        # Time how long correlation matrix takes
+        correlation_matrix_timed = time_it(correlation_matrix)
+        correlation_matrix_timed(df)
         
         column_for_outliers = df.columns[0]  # Change column index as needed
         outliers = detect_outliers(df, column_for_outliers)
