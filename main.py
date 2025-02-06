@@ -1,6 +1,25 @@
+import time
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+
+def time_it(func: callable) -> callable:
+    """
+    Decorator function to measure the execution time of a function.
+
+    Args:
+    func: The function to be executed
+
+    Returns:
+    wrapper: The wrapper function
+    """
+    def wrapper(*args, **kwargs):
+        start_time = time.time()
+        result = func(*args, **kwargs)
+        end_time = time.time()
+        print(f"Execution time: {end_time - start_time} seconds")
+        return result
+    return wrapper
 
 def load_data(filepath):
     """Loads a CSV file into a Pandas DataFrame."""
@@ -74,7 +93,9 @@ def main():
         column_to_plot = df.columns[0]  # Change column index as needed
         plot_histogram(df, column_to_plot)
         
-        correlation_matrix(df)
+        # Time how long correlation matrix takes
+        correlation_matrix_timed = time_it(correlation_matrix)
+        correlation_matrix_timed(df)
         
         column_for_outliers = df.columns[0]  # Change column index as needed
         outliers = detect_outliers(df, column_for_outliers)
