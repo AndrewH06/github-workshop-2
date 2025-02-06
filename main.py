@@ -56,7 +56,7 @@ def detect_outliers(df, column):
 
 def main():
     """Main function to execute the script."""
-    filepath = "data.csv"  # Modify as needed
+    filepath = "./data/data.csv"  # Modify as needed
     df = load_data(filepath)
     if df is not None:
         df = clean_data(df)
